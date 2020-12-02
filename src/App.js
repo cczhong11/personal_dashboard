@@ -2,6 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 import "antd/dist/antd.css"
 import Improvement from './components/Improvement';
+import LatestWeekly from './components/LatestWeekly';
+import LatestMonthly from './components/LatestMonthly';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import useState from 'react';
 import {  Menu,Layout } from 'antd';
@@ -61,6 +63,8 @@ function App() {
         <div className="site-layout-background" style={{ padding: 24, minHeight: 1024 }}>
         <Route exact path="/" component={Improvement} />
             <Route path="/improvement" component={Improvement} />
+            <Route path="/weekly" component={LatestWeekly} />
+            <Route path="/monthly" component={LatestMonthly} />
         </div>
       </Content>
    
