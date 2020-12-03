@@ -4,6 +4,7 @@ import "antd/dist/antd.css"
 import Improvement from './components/Improvement';
 import LatestWeekly from './components/LatestWeekly';
 import LatestMonthly from './components/LatestMonthly';
+import EditWeekly from './components/EditWeekly';
 import ReadList from './components/ReadList';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import useState from 'react';
@@ -67,6 +68,7 @@ function App() {
             <Route path="/weekly" component={LatestWeekly} />
             <Route path="/monthly" component={LatestMonthly} />
             <Route path="/read" component={ReadList} />
+            <Route path="/weekly_edit" component={EditWeekly} />
         </div>
       </Content>
    
