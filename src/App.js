@@ -5,18 +5,21 @@ import Improvement from './components/Improvement';
 import LatestWeekly from './components/LatestWeekly';
 import LatestMonthly from './components/LatestMonthly';
 import EditWeekly from './components/EditWeekly';
+import Principe from './components/Principe';
 import ReadList from './components/ReadList';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link,useLocation } from "react-router-dom";
 import useState from 'react';
 import {  Menu,Layout } from 'antd';
 import {  BookOutlined, UserOutlined, AimOutlined,EditOutlined,FolderViewOutlined  } from '@ant-design/icons';
 const { Header, Sider, Content} = Layout;
-
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+  }
 const { SubMenu } = Menu;
 function App() {
-    
+    let query = useQuery();
   return (
-    <Router>
+  
     <Layout>
     <Sider
       breakpoint="lg"
@@ -33,6 +36,10 @@ function App() {
         <Menu.Item key="1" icon={<UserOutlined />}>
           自己提高的点
           <Link to="/improvement" />
+        </Menu.Item>
+        <Menu.Item key="10" icon={<UserOutlined />}>
+          原则
+          <Link to="/principe" />
         </Menu.Item>
         <Menu.Item key="2" icon={<AimOutlined />}>
           本周目标
@@ -68,13 +75,14 @@ function App() {
             <Route path="/weekly" component={LatestWeekly} />
             <Route path="/monthly" component={LatestMonthly} />
             <Route path="/read" component={ReadList} />
-            <Route path="/weekly_edit" component={EditWeekly} />
+            <Route path="/weekly_edit" children={<EditWeekly date={query.get("name")??""}/>} />
+            <Route path="/principe" component={Principe} />
         </div>
       </Content>
    
     </Layout>
   </Layout>
-  </Router>
+
   );
 }
 

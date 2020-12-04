@@ -21,7 +21,19 @@ export default function JsonEditPage(props) {
       }
     );
   }, [c]);
+  //load data if exist
+  useEffect(() => {
+      if(props.date !== undefined && props.date !== null &&props.date!==""){
+        Axios.get(`http://${dest_url}/json?list=${props.name}&name=${props.date}.json`).then(
+            (data) => {
+              setJsonData(data.data.data[0].data);
+            });
+      }
+    
+    
+  }, [c]);
   const setTextInput = (text, key) => {
+      console.log(jsonData);
     setJsonData({
       ...jsonData,
       [key]: text,
@@ -31,8 +43,13 @@ export default function JsonEditPage(props) {
     setDate(text);
   };
   const postData = ()=>{
-    const postData = {date:date, data:jsonData};
-    Axios.post(`http://${dest_url}/json?list=${props.name}`,postData);
+      
+      if (!('date' in jsonData)){
+          setJsonData({...jsonData, date:date});
+      }
+        
+       
+    Axios.post(`http://${dest_url}/json?list=${props.name}`,jsonData);
   }
   return (
     <>
@@ -44,8 +61,9 @@ export default function JsonEditPage(props) {
             <h2>{data.title}</h2>
             
             <TextArea
-              rows={4}
+              rows={6}
               onChange={(e) => setTextInput(e.target.value, data.id)}
+              value={jsonData[data.id]??""}
             />
             <br />
           </div>
