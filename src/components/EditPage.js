@@ -1,7 +1,7 @@
 import JsonEditPage from './JsonEditPage';
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
-export default function EditWeekly(props) {
+export default function EditPage(props) {
     const [date, setDate] = useState(props.date);
     const [loading, setLoading] = useState(true);
     const dest_url =
@@ -14,12 +14,12 @@ export default function EditWeekly(props) {
             setLoading(false);
             return;
         }
-        Axios.get(`http://${dest_url}/date?list=weekly`).then((data) => {
+        Axios.get(`http://${dest_url}/date?list=${props.list}`).then((data) => {
             setDate(
             data.data.date);
             setLoading(false);
         });
         
       }, [c]);
-    return loading?<></>:<JsonEditPage name="weekly" date={date}/>;
+    return loading?<></>:<JsonEditPage list={props.list} date={date}/>;
 }

@@ -4,9 +4,10 @@ import "antd/dist/antd.css"
 import Improvement from './components/Improvement';
 import LatestWeekly from './components/LatestWeekly';
 import LatestMonthly from './components/LatestMonthly';
-import EditWeekly from './components/EditWeekly';
+import EditPage from './components/EditPage';
 import Principe from './components/Principe';
 import ReadList from './components/ReadList';
+import ShowPage from './components/ShowPage';
 import { BrowserRouter as Router, Route, Link,useLocation } from "react-router-dom";
 import useState from 'react';
 import {  Menu,Layout } from 'antd';
@@ -16,7 +17,7 @@ function useQuery() {
     return new URLSearchParams(useLocation().search);
   }
 const { SubMenu } = Menu;
-function App() {
+function App(props) {
     let query = useQuery();
   return (
   
@@ -55,7 +56,7 @@ function App() {
         </Menu.Item>
         <SubMenu key="sub1" icon={<EditOutlined />} title="修改">
             <Menu.Item key="weekly_edit">每周计划<Link to="/weekly_edit" /></Menu.Item>
-            <Menu.Item key="month_edit">每月计划<Link to="/monthly_edit" /></Menu.Item>
+            <Menu.Item key="monthly_edit">每月计划<Link to="/monthly_edit" /></Menu.Item>
             <Menu.Item key="friend">朋友<Link to="/friend_edit" /></Menu.Item>
           </SubMenu>
           <SubMenu key="sub2" icon={<FolderViewOutlined />} title="查看">
@@ -75,7 +76,9 @@ function App() {
             <Route path="/weekly" component={LatestWeekly} />
             <Route path="/monthly" component={LatestMonthly} />
             <Route path="/read" component={ReadList} />
-            <Route path="/weekly_edit" children={<EditWeekly date={query.get("name")??""}/>} />
+            <Route path="/weekly_edit" children={<EditPage list="weekly" date={query.get("date")??""}/>} />
+            <Route path="/weekly_view" children={<ShowPage list="weekly"/>} />
+            <Route path="/monthly_edit" children={<EditPage list="monthly" date={query.get("date")??""}/>} />
             <Route path="/principe" component={Principe} />
         </div>
       </Content>

@@ -11,7 +11,7 @@ export default function JsonRenderPage(props) {
   const [jsonData, setJsonData] = useState({});
   const [markdownData, setMarkdownData] = useState("");
   useEffect(() => {
-    Axios.get(`http://${dest_url}/json?name=${props.name}.json`).then((data) => {
+    Axios.get(`http://${dest_url}/json?name=${props.list}.json`).then((data) => {
       setJsonStructure(data.data.data[0].structure.content);
     });
   }, [c]);
@@ -26,7 +26,7 @@ export default function JsonRenderPage(props) {
     else {
         // here name is the list name
         Axios.get(
-            `http://${dest_url}/json?date=latest&list=${props.name}`
+            `http://${dest_url}/json?date=latest&list=${props.list}`
           ).then((data) => {
             setJsonData(data.data.data[0].data);
           });
@@ -34,7 +34,12 @@ export default function JsonRenderPage(props) {
   }, [jsonStructure]);
   useEffect(() => {
     const rs = jsonStructure.map(element => {
-        if (element.id.includes('next')){
+        if(props.onlynext){
+            if (element.id.includes('next')){
+                return "## "+element.title+"\n\n"+jsonData[element.id];
+            }
+        }
+        else{
             return "## "+element.title+"\n\n"+jsonData[element.id];
         }
         return "";
