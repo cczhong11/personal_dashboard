@@ -50,6 +50,10 @@ export default function JsonEditPage(props) {
   };
   const setInputDate = (text) => {
     setDate(text);
+    setJsonData({
+        ...jsonData,
+        date: text,
+      });
   };
   const postData = () => {
     

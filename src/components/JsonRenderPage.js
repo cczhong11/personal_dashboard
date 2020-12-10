@@ -35,12 +35,12 @@ export default function JsonRenderPage(props) {
   useEffect(() => {
     const rs = jsonStructure.map(element => {
         if(props.onlynext){
-            if (element.id.includes('next')){
-                return "## "+element.title+"\n\n"+jsonData[element.id];
+            if (element.id.includes('next') ){
+                return "## "+element.title+"\n\n"+ jsonData[element.id] ??"";
             }
         }
         else{
-            return "## "+element.title+"\n\n"+jsonData[element.id];
+            return "## "+element.title+"\n\n"+ (jsonData[element.id] ??"");
         }
         return "";
     });
