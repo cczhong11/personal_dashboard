@@ -30,7 +30,6 @@ export default function ReadList() {
           return (
               <>
             <a
-              href="#"
               onClick={() => {
                 setClickName(item.name);
                 setShowAll(false);
