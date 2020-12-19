@@ -5,13 +5,14 @@ import Improvement from './components/Improvement';
 import LatestWeekly from './components/LatestWeekly';
 import LatestMonthly from './components/LatestMonthly';
 import EditPage from './components/EditPage';
+import EmpathyPage from './components/EmpathyPage';
 import Principe from './components/Principe';
 import ReadList from './components/ReadList';
 import ShowPage from './components/ShowPage';
 import { BrowserRouter as Router, Route, Link,useLocation } from "react-router-dom";
 import useState from 'react';
 import {  Menu,Layout } from 'antd';
-import {  BookOutlined, UserOutlined, AimOutlined,EditOutlined,FolderViewOutlined  } from '@ant-design/icons';
+import {  BookOutlined, UserOutlined, AimOutlined,EditOutlined,FolderViewOutlined,HeartOutlined  } from '@ant-design/icons';
 const { Header, Sider, Content} = Layout;
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -41,6 +42,10 @@ function App(props) {
         <Menu.Item key="10" icon={<UserOutlined />}>
           原则
           <Link to="/principe" />
+        </Menu.Item>
+        <Menu.Item key="11" icon={<HeartOutlined />}>
+          同理心
+          <Link to="/empthy" />
         </Menu.Item>
         <Menu.Item key="2" icon={<AimOutlined />}>
           本周目标
@@ -86,6 +91,7 @@ function App(props) {
             <Route path="/monthly_edit" children={<EditPage list="monthly" date={query.get("date")??""}/>} />
             <Route path="/monthly_view" children={<ShowPage list="monthly"/>} />
             <Route path="/principe" component={Principe} />
+            <Route path="/empthy" component={HeartOutlined} />
         </div>
       </Content>
    
