@@ -1,12 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
 import "antd/dist/antd.css"
-import Improvement from './components/Improvement';
 import LatestWeekly from './components/LatestWeekly';
 import LatestMonthly from './components/LatestMonthly';
 import EditPage from './components/EditPage';
-import EmpathyPage from './components/EmpathyPage';
-import Principe from './components/Principe';
+import MarkdownPage from './components/MarkdownPage';
 import ReadList from './components/ReadList';
 import ShowPage from './components/ShowPage';
 import { BrowserRouter as Router, Route, Link,useLocation } from "react-router-dom";
@@ -78,7 +76,7 @@ function App(props) {
       <Content style={{ margin: '24px 16px 0' }}>
         <div className="site-layout-background" style={{ padding: 24, minHeight: 1024 }}>
         <Route exact path="/" component={Improvement} />
-            <Route path="/improvement" component={Improvement} />
+            <Route path="/improvement" component={<MarkdownPage name="我能做的好的地方.md" list="must"/>} />
             <Route path="/weekly" component={LatestWeekly} />
             <Route path="/monthly" component={LatestMonthly} />
             <Route path="/read" component={ReadList} />
@@ -90,8 +88,8 @@ function App(props) {
             <Route path="/friends_view" children={<ShowPage list="friends"/>} />
             <Route path="/monthly_edit" children={<EditPage list="monthly" date={query.get("date")??""}/>} />
             <Route path="/monthly_view" children={<ShowPage list="monthly"/>} />
-            <Route path="/principe" component={Principe} />
-            <Route path="/empthy" component={HeartOutlined} />
+            <Route path="/principe" component={<MarkdownPage name="原则.md" list="must"/>} />
+            <Route path="/empthy" component={<MarkdownPage name="同理心.md" list="must"/>} />
         </div>
       </Content>
    
