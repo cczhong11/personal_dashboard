@@ -40,7 +40,11 @@ export default function JsonRenderPage(props) {
             }
         }
         else{
-            return "## "+element.title+"\n\n"+ (jsonData[element.id] ??"");
+            var rs = jsonData[element.id] ??"";
+            if(Array.isArray(jsonData[element.id])){
+                rs = jsonData[element.id].join("\n");
+            }
+            return "## "+element.title+"\n\n"+ rs;
         }
         return "";
     });
