@@ -30,7 +30,7 @@ export default function ShowPage(props) {
     return showAll?(<>{markdownList.sort((a, b) => {
           return b.name.localeCompare(a.name);
         })
-        .map((item) => {
+        .map((item,index) => {
           return (
               <>
             <a
@@ -40,7 +40,7 @@ export default function ShowPage(props) {
               }}
               key={item.name}
             >
-              {item.name}
+               {index}. {item.name}
             </a>
             <br/>
             </>

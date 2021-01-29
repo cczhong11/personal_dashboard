@@ -26,7 +26,7 @@ export default function ReadList() {
     return showAll?(<>{markdownList.sort((a, b) => {
           return a.name.localeCompare(b.name);
         })
-        .map((item) => {
+        .map((item,index) => {
           return (
               <>
             <a
@@ -36,7 +36,7 @@ export default function ReadList() {
               }}
               key={item.name}
             >
-              {item.name}
+              {index}. {item.name}
             </a>
             <br/>
             </>

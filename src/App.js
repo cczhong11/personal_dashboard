@@ -4,6 +4,7 @@ import "antd/dist/antd.css";
 import LatestWeekly from "./components/LatestWeekly";
 import LatestMonthly from "./components/LatestMonthly";
 import EditPage from "./components/EditPage";
+import MarkdownEditPage from "./components/MarkdownEditPage";
 import MarkdownPage from "./components/MarkdownPage";
 import ReadList from "./components/ReadList";
 import ShowPage from "./components/ShowPage";
@@ -209,9 +210,15 @@ function App(props) {
               );
             })}
             <Route
-              path="/friends_edit"
+              path="/markdown_edit"
               children={
-                <EditPage list="friends" date={query.get("date") ?? ""} />
+                <MarkdownEditPage list={query.get("list") ?? ""} name={query.get("name") ?? ""} />
+              }
+            />
+            <Route
+              path="/markdown_show"
+              children={
+                <MarkdownPage list={query.get("list") ?? ""} name={query.get("name") ?? ""} />
               }
             />
             <Route
