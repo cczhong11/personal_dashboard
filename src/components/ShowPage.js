@@ -3,7 +3,7 @@ import Axios from "axios";
 import { Button } from "antd";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import MapContainer from './GoogleMap';
+import MapContainer from "./GoogleMap";
 
 export default function ShowPage(props) {
   const [markdownList, setMarkdownList] = useState([]);
@@ -18,33 +18,32 @@ export default function ShowPage(props) {
   console.log(props.history);
   useEffect(() => {
     Axios.get(`http://${dest_url}/file?list=${props.list}`).then((data) => {
-        if(props.list.includes("tour")||props.list.includes("resturant")){
-            setMarkdownList(
-                data.data.data
-                  .filter((item) => {
-                    return !item.name.includes("9999");
-                  })
-                  .map((item) => {
-                    return {
-                      name: item.name,
-                      latlng: item.latlng
-                    };
-                  })
-              );
-        }
-        else{
-            setMarkdownList(
-                data.data.data
-                  .filter((item) => {
-                    return !item.name.includes("9999");
-                  })
-                  .map((item) => {
-                    return {
-                      name: item.name,
-                    };
-                  })
-              );
-        }
+      if (props.list.includes("tour") || props.list.includes("resturant")) {
+        setMarkdownList(
+          data.data.data
+            .filter((item) => {
+              return !item.name.includes("9999");
+            })
+            .map((item) => {
+              return {
+                name: item.name,
+                latlng: item.latlng,
+              };
+            })
+        );
+      } else {
+        setMarkdownList(
+          data.data.data
+            .filter((item) => {
+              return !item.name.includes("9999");
+            })
+            .map((item) => {
+              return {
+                name: item.name,
+              };
+            })
+        );
+      }
     });
     console.log(markdownList);
   }, [c, showAll]);
@@ -70,7 +69,11 @@ export default function ShowPage(props) {
             </>
           );
         })}
-    <MapContainer list={markdownList}/>
+      {props.list.includes("tour") || props.list.includes("resturant") ? (
+        <MapContainer list={markdownList} />
+      ) : (
+        <></>
+      )}
     </>
   ) : (
     <>
@@ -91,8 +94,7 @@ export default function ShowPage(props) {
       >
         edit
       </Button>
-      <br/>
-      
+      <br />
     </>
   );
 }

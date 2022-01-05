@@ -41,6 +41,7 @@ function App(props) {
     { name: "睡前故事", json: "sleep_story" },
     { name: "故事", json: "story" },
     { name: "笑话", json: "fun" },
+    { name: "自己的想法", json: "event_and_feeling" },
   ];
   const todo_list = [
     { name: "读书计划", json: "book" },
@@ -49,6 +50,7 @@ function App(props) {
     { name: "餐厅", json: "resturant" },
     { name: "旅游", json: "tour" },
     { name: "摄影", json: "photos" },
+    { name: "想做的事情", json: "play" },
   ];
   let query = useQuery();
   return (
@@ -168,14 +170,14 @@ function App(props) {
             />
             <Route
               path="/year_plan"
-              children={<MarkdownPage name="2021年计划.md" list="must" />}
+              children={<MarkdownPage name="2022年计划.md" list="must" />}
             />
             <Route path="/weekly" component={LatestWeekly} />
             <Route path="/monthly" component={LatestMonthly} />
             <Route path="/read" component={ReadList} />
             {sub.map((item) => {
               const key = `/${item.json}_edit`;
-       
+
               return (
                 <Route
                   path={key}
@@ -193,7 +195,7 @@ function App(props) {
             })}
             {todo_list.map((item) => {
               const key = `/${item.json}_edit`;
-       
+
               return (
                 <Route
                   path={key}
@@ -212,13 +214,19 @@ function App(props) {
             <Route
               path="/markdown_edit"
               children={
-                <MarkdownEditPage list={query.get("list") ?? ""} name={query.get("name") ?? ""} />
+                <MarkdownEditPage
+                  list={query.get("list") ?? ""}
+                  name={query.get("name") ?? ""}
+                />
               }
             />
             <Route
               path="/markdown_show"
               children={
-                <MarkdownPage list={query.get("list") ?? ""} name={query.get("name") ?? ""} />
+                <MarkdownPage
+                  list={query.get("list") ?? ""}
+                  name={query.get("name") ?? ""}
+                />
               }
             />
             <Route

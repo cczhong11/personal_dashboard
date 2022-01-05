@@ -33,7 +33,7 @@ export default function JsonRenderPage(props) {
     }
   }, [jsonStructure]);
   useEffect(() => {
-    const rs = jsonStructure.map(element => {
+    var rs = jsonStructure.map(element => {
         if(props.onlynext){
             if (element.id.includes('next') ){
                 return "## "+element.title+"\n\n"+ jsonData[element.id] ??"";
@@ -48,7 +48,7 @@ export default function JsonRenderPage(props) {
         }
         return "";
     });
-    
+    rs.unshift(`# ${jsonData['date']}`);
     setMarkdownData(rs.join("\n"));
   },[jsonData]);
   return <ReactMarkdown source={markdownData} />;
