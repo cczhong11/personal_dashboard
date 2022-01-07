@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Input } from "antd";
 import { Button } from "antd";
 import { useHistory } from "react-router-dom";
+import JsonRenderPage from "./JsonRenderPage";
 const { TextArea } = Input;
 
 export default function JsonEditPage(props) {
@@ -13,12 +14,12 @@ export default function JsonEditPage(props) {
   const [jsonStructure, setJsonStructure] = useState([]);
   const [c] = useState(0);
   const [jsonData, setJsonData] = useState({});
+
   let history = useHistory();
   let props_date = "";
   if (props.date !== undefined && props.date !== null && props.date !== "") {
     props_date = props.date.split(".")[0];
   }
-  console.log(props_date);
   const [date, setDate] = useState(props_date);
   if (!("date" in jsonData)) {
     setJsonData({ ...jsonData, date: date });
@@ -41,6 +42,7 @@ export default function JsonEditPage(props) {
       });
     }
   }, [c]);
+
   const setTextInput = (text, key) => {
     console.log(jsonData);
     setJsonData({
@@ -51,18 +53,25 @@ export default function JsonEditPage(props) {
   const setInputDate = (text) => {
     setDate(text);
     setJsonData({
-        ...jsonData,
-        date: text,
-      });
+      ...jsonData,
+      date: text,
+    });
   };
   const postData = () => {
-    
-
-    Axios.post(`http://${dest_url}/json?list=${props.list}`, jsonData).then(()=>{history.push(`/${props.list}_view`);});
-    
+    Axios.post(`http://${dest_url}/json?list=${props.list}`, jsonData).then(
+      () => {
+        history.push(`/${props.list}_view`);
+      }
+    );
   };
   return (
     <>
+      {props.list === "weekly" || props.list === "monthly" ? (
+        <JsonRenderPage latest="true" list={props.list} onlynext={true} />
+      ) : (
+        <></>
+      )}
+
       <h2>Date</h2>
       <Input value={date} onChange={(e) => setInputDate(e.target.value)} />
       {jsonStructure.map((data) => {
