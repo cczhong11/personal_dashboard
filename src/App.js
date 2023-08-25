@@ -25,6 +25,7 @@ import {
   HeartOutlined,
   SafetyCertificateOutlined,
 } from "@ant-design/icons";
+import BookSummaryPage from "./components/BookSummaryPage";
 const { Header, Sider, Content } = Layout;
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -99,6 +100,10 @@ function App(props) {
             读书笔记
             <Link to="/read" />
           </Menu.Item>
+          <Menu.Item key="6" icon={<BookOutlined />}>
+            书籍总结
+            <Link to="/book_summary" />
+          </Menu.Item>
           <SubMenu key="sub1" icon={<EditOutlined />} title="修改">
             {sub.map((item) => {
               const key = `${item.json}_edit`;
@@ -170,11 +175,12 @@ function App(props) {
             />
             <Route
               path="/year_plan"
-              children={<MarkdownPage name="2022年计划.md" list="must" />}
+              children={<MarkdownPage name="2023年计划.md" list="must" />}
             />
             <Route path="/weekly" component={LatestWeekly} />
             <Route path="/monthly" component={LatestMonthly} />
             <Route path="/read" component={ReadList} />
+            <Route path="/book_summary" component={BookSummaryPage} />
             {sub.map((item) => {
               const key = `/${item.json}_edit`;
 

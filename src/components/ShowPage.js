@@ -4,20 +4,16 @@ import { Button } from "antd";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import MapContainer from "./GoogleMap";
-
+import { dest_url } from "./const";
 export default function ShowPage(props) {
   const [markdownList, setMarkdownList] = useState([]);
-  const dest_url =
-    (process.env.REACT_APP_IP ?? "127.0.0.1") +
-    ":" +
-    (process.env.REACT_APP_PORT ?? "219");
+
   const [clickName, setClickName] = useState("");
   const [showAll, setShowAll] = useState(true);
   let history = useHistory();
   const c = 0;
-  console.log(props.history);
   useEffect(() => {
-    Axios.get(`http://${dest_url}/file?list=${props.list}`).then((data) => {
+    Axios.get(`https://${dest_url}/file?list=${props.list}`).then((data) => {
       if (props.list.includes("tour") || props.list.includes("resturant")) {
         setMarkdownList(
           data.data.data
@@ -45,7 +41,6 @@ export default function ShowPage(props) {
         );
       }
     });
-    console.log(markdownList);
   }, [c, showAll]);
   return showAll ? (
     <>

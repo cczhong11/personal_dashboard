@@ -4,13 +4,9 @@ import { Input } from "antd";
 import { Button } from "antd";
 import { useHistory } from "react-router-dom";
 import JsonRenderPage from "./JsonRenderPage";
+import { dest_url } from "./const";
 const { TextArea } = Input;
-
 export default function JsonEditPage(props) {
-  const dest_url =
-    (process.env.REACT_APP_IP ?? "127.0.0.1") +
-    ":" +
-    (process.env.REACT_APP_PORT ?? "219");
   const [jsonStructure, setJsonStructure] = useState([]);
   const [c] = useState(0);
   const [jsonData, setJsonData] = useState({});
@@ -26,7 +22,7 @@ export default function JsonEditPage(props) {
   }
   // get json structure
   useEffect(() => {
-    let url = `http://${dest_url}/json?name=${props.list}.json`;
+    let url = `https://${dest_url}/json?name=${props.list}.json`;
 
     Axios.get(url).then((data) => {
       setJsonStructure(data.data.data[0].structure.content);
@@ -35,7 +31,7 @@ export default function JsonEditPage(props) {
   //load data if exist
   useEffect(() => {
     if (props.date !== undefined && props.date !== null && props.date !== "") {
-      let url = `http://${dest_url}/json?list=${props.list}&name=${props_date}.json`;
+      let url = `https://${dest_url}/json?list=${props.list}&name=${props_date}.json`;
 
       Axios.get(url).then((data) => {
         setJsonData(data.data.data[0].data);
@@ -58,7 +54,7 @@ export default function JsonEditPage(props) {
     });
   };
   const postData = () => {
-    Axios.post(`http://${dest_url}/json?list=${props.list}`, jsonData).then(
+    Axios.post(`https://${dest_url}/json?list=${props.list}`, jsonData).then(
       () => {
         history.push(`/${props.list}_view`);
       }
