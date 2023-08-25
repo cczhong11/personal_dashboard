@@ -25,7 +25,7 @@ import {
   HeartOutlined,
   SafetyCertificateOutlined,
 } from "@ant-design/icons";
-import BookSummaryPage from "./components/BookSummaryPage";
+import ReadSummaryList from "./components/ReadSummaryList";
 const { Header, Sider, Content } = Layout;
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -180,7 +180,7 @@ function App(props) {
             <Route path="/weekly" component={LatestWeekly} />
             <Route path="/monthly" component={LatestMonthly} />
             <Route path="/read" component={ReadList} />
-            <Route path="/book_summary" component={BookSummaryPage} />
+            <Route path="/book_summary" component={ReadSummaryList} />
             {sub.map((item) => {
               const key = `/${item.json}_edit`;
 
