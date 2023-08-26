@@ -32,7 +32,9 @@ export default function BookSummaryPage(props) {
           }`}
           key={index}
         >
-          <p className="summary">{book.summary}</p>
+          <p className="summary">
+            {index + 1}. {book.summary}
+          </p>
           <button onClick={() => toggleOriginalText(index)}>阅读原文</button>
           {selectedSummaryIndex === index && (
             <p className="original-text">{book.chunk}</p>
