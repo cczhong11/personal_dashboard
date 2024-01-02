@@ -175,7 +175,7 @@ function App(props) {
             />
             <Route
               path="/year_plan"
-              children={<MarkdownPage name="2023年计划.md" list="must" />}
+              children={<MarkdownPage name="2024年计划.md" list="must" />}
             />
             <Route path="/weekly" component={LatestWeekly} />
             <Route path="/monthly" component={LatestMonthly} />

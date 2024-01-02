@@ -20,7 +20,7 @@ export default function BookSummaryPage(props) {
     Axios.get(
       `https://${dest_url}/json?name=${props.name}&list=${props.list}_highlight`
     ).then((data) => {
-      setHighlightJsonData(data.data.data[0].data.data);
+      setHighlightJsonData(data.data.data[0].data.data ?? []);
     });
   }, [c]);
   console.log(highlightJsonData);
@@ -32,7 +32,9 @@ export default function BookSummaryPage(props) {
     }
   };
   const divRef = useRef(null);
-
+  const importantHighlights = highlightJsonData.filter(
+    (highlight) => highlight.type === "important"
+  );
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
   const postData = () => {
     Axios.post(`https://${dest_url}/json?list=${props.list}_highlight`, {
@@ -59,7 +61,24 @@ export default function BookSummaryPage(props) {
     selection.removeAllRanges();
     setHighlightJsonData([...highlightJsonData, newHighlight]);
   };
+  const handleImportant = (e) => {
+    const parentElement = e.target.parentElement;
+    const currentIndex = e.target.getAttribute("data-index");
+    const newHighlight = {
+      index: parseInt(currentIndex, 10),
+      startOffset: 0,
+      endOffset: 0,
+      type: "important",
+    };
+    if (!parentElement.textContent.startsWith("⭐")) {
+      parentElement.textContent = "⭐" + parentElement.textContent;
+    }
+    setHighlightJsonData([...highlightJsonData, newHighlight]);
+  };
   useEffect(() => {
+    if ((highlightJsonData ?? []).length === 0) {
+      return;
+    }
     postData();
   }, [highlightJsonData]);
 
@@ -68,20 +87,23 @@ export default function BookSummaryPage(props) {
     if (selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
+      const scrollX = window.scrollX;
+      const scrollY = window.scrollY;
+
       setToolbarPosition({
-        top: rect.top - 40,
-        left: rect.left + rect.width / 2,
+        top: rect.top - 40 + scrollY,
+        left: rect.left + rect.width / 2 + scrollX,
       });
     }
   };
 
   useEffect(() => {
-    divRef.current.addEventListener("mouseup", showToolbar);
-    divRef.current.addEventListener("touchend", showToolbar);
+    const event = "mouseup";
+
+    divRef.current.addEventListener(event, showToolbar);
 
     return () => {
-      divRef.current.removeEventListener("mouseup", showToolbar);
-      divRef.current.removeEventListener("touchend", showToolbar);
+      divRef.current.removeEventListener(event, showToolbar);
     };
   }, []);
   const renderHighlightedText = (text, summaryIndex, contentType) => {
@@ -130,11 +152,19 @@ export default function BookSummaryPage(props) {
             selectedSummaryIndex === index ? "show-original" : ""
           }`}
           key={index}
+          data-index={index}
         >
+          {importantHighlights.some((highlight) => highlight.index === index)
+            ? "⭐"
+            : ""}
           <p className="summary" data-index={index}>
             {index + 1}. {renderHighlightedText(book.summary, index, "summary")}
           </p>
           <button onClick={() => toggleOriginalText(index)}>阅读原文</button>
+
+          <button onClick={handleImportant} data-index={index}>
+            重要
+          </button>
           {selectedSummaryIndex === index && (
             <p className="original-text" data-index={index}>
               {renderHighlightedText(book.chunk, index, "original-text")}
