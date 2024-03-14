@@ -9,6 +9,9 @@
   font-weight: bold;
 }
 
+.important {
+  background-color: antiquewhite;
+}
 .original-text {
   display: none;
   font-style: italic;

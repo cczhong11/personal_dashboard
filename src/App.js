@@ -39,7 +39,7 @@ function App(props) {
     { name: "每月计划", json: "monthly" },
     { name: "项目", json: "project" },
     { name: "朋友", json: "friends" },
-    { name: "睡前故事", json: "sleep_story" },
+    { name: "提醒自己", json: "reminder_list" },
     { name: "故事", json: "story" },
     { name: "笑话", json: "fun" },
     { name: "自己的想法", json: "event_and_feeling" },

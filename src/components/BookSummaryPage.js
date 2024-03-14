@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { dest_url } from "./const";
 import "./BookSummaryPage.css";
+
 export default function BookSummaryPage(props) {
   const [c] = useState(0);
 
@@ -42,17 +43,34 @@ export default function BookSummaryPage(props) {
       data: highlightJsonData,
     }).then(() => {});
   };
+  const computeTrueOffsets = (range, currentIndex, currentType) => {
+    // get selected text
+    let text = range.toString();
+    let current_text =
+      currentType === "summary"
+        ? jsonData[currentIndex].summary
+        : jsonData[currentIndex].chunk;
+    let startOffset = current_text.indexOf(text);
+    let endOffset = startOffset + text.length;
+    return { startOffset, endOffset };
+  };
   const handleHighlight = () => {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
+
     const parentElement = range.commonAncestorContainer.parentElement;
     const parentparentElement = parentElement.parentElement;
     const currentIndex = parentparentElement.getAttribute("data-index");
     const currentType = parentparentElement.getAttribute("class");
+    const rs = computeTrueOffsets(
+      range,
+      parseInt(currentIndex, 10),
+      currentType
+    );
     const newHighlight = {
       index: parseInt(currentIndex, 10),
-      startOffset: range.startOffset,
-      endOffset: range.endOffset,
+      startOffset: rs.startOffset,
+      endOffset: rs.endOffset,
       type: currentType,
     };
     const span = document.createElement("span");
@@ -135,6 +153,11 @@ export default function BookSummaryPage(props) {
 
     return elements;
   };
+  const sorted_highlight = importantHighlights
+    .map((h) => {
+      return h.index;
+    })
+    .sort((a, b) => b - a);
   return (
     <div ref={divRef}>
       <div
@@ -146,10 +169,18 @@ export default function BookSummaryPage(props) {
       >
         <button onClick={handleHighlight}>高亮</button>
       </div>
+      <h2>Latest Highlight section: {sorted_highlight[0]?.toString()}</h2>
+
       {jsonData?.map((book, index) => (
         <div
           className={`book-item ${
-            selectedSummaryIndex === index ? "show-original" : ""
+            selectedSummaryIndex === index
+              ? "show-original"
+              : importantHighlights.some(
+                  (highlight) => highlight.index === index
+                )
+              ? "important"
+              : ""
           }`}
           key={index}
           data-index={index}
@@ -172,7 +203,6 @@ export default function BookSummaryPage(props) {
           )}
         </div>
       ))}
-
       <style jsx>{`
         .highlight {
           background-color: yellow;
