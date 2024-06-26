@@ -37,8 +37,6 @@ function App(props) {
     { name: "每周工作总结", json: "weekly_work" },
     { name: "每周生活时间总结", json: "weekly_analysis" },
     { name: "每月计划", json: "monthly" },
-    { name: "项目", json: "project" },
-    { name: "朋友", json: "friends" },
     { name: "提醒自己", json: "reminder_list" },
     { name: "故事", json: "story" },
     { name: "笑话", json: "fun" },
