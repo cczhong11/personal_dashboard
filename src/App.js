@@ -8,6 +8,7 @@ import MarkdownEditPage from "./components/MarkdownEditPage";
 import MarkdownPage from "./components/MarkdownPage";
 import ReadList from "./components/ReadList";
 import ShowPage from "./components/ShowPage";
+import SignInPage from "./components/SignInPage";
 import {
   BrowserRouter as Router,
   Route,
@@ -66,6 +67,10 @@ function App(props) {
       >
         <div className="logo" />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
+          <Menu.Item key="signin" icon={<UserOutlined />}>
+            Sign In
+            <Link to="/signin" />
+          </Menu.Item>
           <Menu.Item key="1" icon={<UserOutlined />}>
             自己提高的点
             <Link to="/improvement" />
@@ -241,6 +246,7 @@ function App(props) {
               path="/empthy"
               children={<MarkdownPage name="同理心.md" list="must" />}
             />
+            <Route path="/signin" component={SignInPage} />
           </div>
         </Content>
       </Layout>
