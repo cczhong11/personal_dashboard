@@ -9,13 +9,15 @@ import MarkdownPage from "./components/MarkdownPage";
 import ReadList from "./components/ReadList";
 import ShowPage from "./components/ShowPage";
 import SignInPage from "./components/SignInPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import {
   BrowserRouter as Router,
   Route,
   Link,
   useLocation,
+  Redirect,
 } from "react-router-dom";
-import useState from "react";
+import { useState, useEffect } from "react";
 import { Menu, Layout } from "antd";
 import {
   BookOutlined,
@@ -33,6 +35,12 @@ function useQuery() {
 }
 const { SubMenu } = Menu;
 function App(props) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+    setIsAuthenticated(authToken !== null);
+  }, []);
   const sub = [
     { name: "每周计划", json: "weekly" },
     { name: "每周工作总结", json: "weekly_work" },
@@ -163,27 +171,27 @@ function App(props) {
             className="site-layout-background"
             style={{ padding: 24, minHeight: 1024 }}
           >
-            <Route
+            <ProtectedRoute
               exact
               path="/"
-              children={<MarkdownPage name="我能做的好的地方.md" list="must" />}
+              component={() => <MarkdownPage name="我能做的好的地方.md" list="must" />}
             />
-            <Route
+            <ProtectedRoute
               path="/improvement"
-              children={<MarkdownPage name="我能做的好的地方.md" list="must" />}
+              component={() => <MarkdownPage name="我能做的好的地方.md" list="must" />}
             />
-            <Route
+            <ProtectedRoute
               path="/safety"
-              children={<MarkdownPage name="应急处理方法.md" list="must" />}
+              component={() => <MarkdownPage name="应急处理方法.md" list="must" />}
             />
-            <Route
+            <ProtectedRoute
               path="/year_plan"
-              children={<MarkdownPage name="2024年计划.md" list="must" />}
+              component={() => <MarkdownPage name="2024年计划.md" list="must" />}
             />
-            <Route path="/weekly" component={LatestWeekly} />
-            <Route path="/monthly" component={LatestMonthly} />
-            <Route path="/read" component={ReadList} />
-            <Route path="/book_summary" component={ReadSummaryList} />
+            <ProtectedRoute path="/weekly" component={LatestWeekly} />
+            <ProtectedRoute path="/monthly" component={LatestMonthly} />
+            <ProtectedRoute path="/read" component={ReadList} />
+            <ProtectedRoute path="/book_summary" component={ReadSummaryList} />
             {sub.map((item) => {
               const key = `/${item.json}_edit`;
 

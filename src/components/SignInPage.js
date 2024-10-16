@@ -14,7 +14,7 @@ const SignInPage = () => {
       const response = await axios.post(`${auth_url}/signin`, values);
       if (response.data.success) {
         message.success('Sign in successful');
-        // Here you would typically store the token in localStorage or a state management solution
+        localStorage.setItem('authToken', response.data.token);
         history.push('/');
       } else {
         message.error('Sign in failed');
