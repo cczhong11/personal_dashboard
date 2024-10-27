@@ -83,9 +83,14 @@ export default function ChineseCalendar() {
     const yearGanZhi = getYearGanZhi(value.year());
     const monthGanZhi = getMonthGanZhi(value.year(), value.month() + 1, value.date());
     
+    const monthOptions = Array.from({ length: 12 }, (_, i) => ({
+      value: i,
+      label: `${i + 1}月`
+    }));
+
     return (
       <div style={{ padding: '16px' }}>
-        <div style={{ marginBottom: '8px' }}>
+        <div style={{ marginBottom: '8px', display: 'flex', gap: '8px' }}>
           <Select
             value={value.year()}
             onChange={(newYear) => {
@@ -93,6 +98,15 @@ export default function ChineseCalendar() {
               onChange(date);
             }}
             options={yearOptions}
+            style={{ width: 120 }}
+          />
+          <Select
+            value={value.month()}
+            onChange={(newMonth) => {
+              const date = value.clone().month(newMonth);
+              onChange(date);
+            }}
+            options={monthOptions}
             style={{ width: 120 }}
           />
         </div>
