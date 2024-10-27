@@ -9,10 +9,20 @@ export default function ChineseCalendar() {
   const [year, setYear] = useState(new Date().getFullYear());
 
   const getGanZhi = (date) => {
-    const lunar = LunarCalendar.solarToLunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
-    const dayGanIndex = (lunar.GanIndex) % 10;
-    const dayZhiIndex = (lunar.ZhiIndex) % 12;
-    return Gan[dayGanIndex] + Zhi[dayZhiIndex];
+    try {
+      const lunar = LunarCalendar.solarToLunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+      // Ensure we have valid indices
+      if (lunar && typeof lunar.GanIndex === 'number' && typeof lunar.ZhiIndex === 'number') {
+        // Use Math.abs and ensure positive indices
+        const dayGanIndex = Math.abs(Math.floor(lunar.GanIndex)) % 10;
+        const dayZhiIndex = Math.abs(Math.floor(lunar.ZhiIndex)) % 12;
+        return Gan[dayGanIndex] + Zhi[dayZhiIndex];
+      }
+      return '--'; // Fallback if indices are invalid
+    } catch (error) {
+      console.error('Error calculating Gan-Zhi:', error);
+      return '--'; // Fallback for any errors
+    }
   };
 
   const dateCellRender = (date) => {
