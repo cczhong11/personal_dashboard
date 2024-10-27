@@ -11,17 +11,20 @@ export default function ChineseCalendar() {
   const getGanZhi = (date) => {
     try {
       const lunar = LunarCalendar.solarToLunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
-      // Ensure we have valid indices
-      if (lunar && typeof lunar.GanIndex === 'number' && typeof lunar.ZhiIndex === 'number') {
-        // Use Math.abs and ensure positive indices
-        const dayGanIndex = Math.abs(Math.floor(lunar.GanIndex)) % 10;
-        const dayZhiIndex = Math.abs(Math.floor(lunar.ZhiIndex)) % 12;
-        return Gan[dayGanIndex] + Zhi[dayZhiIndex];
+      // Calculate day's Gan-Zhi based on lunar calendar
+      if (lunar && lunar.lunarDay) {
+        // Calculate the day's Gan index (1-10)
+        const baseDate = new Date(1900, 0, 31); // 1900-01-31 was 甲子日
+        const daysDiff = Math.floor((date - baseDate) / (24 * 60 * 60 * 1000));
+        const ganIndex = daysDiff % 10;
+        const zhiIndex = daysDiff % 12;
+        
+        return Gan[ganIndex] + Zhi[zhiIndex];
       }
-      return '--'; // Fallback if indices are invalid
+      return '--';
     } catch (error) {
-      console.error('Error calculating Gan-Zhi:', error);
-      return '--'; // Fallback for any errors
+      console.error('Error calculating Gan-Zhi:', error, date);
+      return '--';
     }
   };
 
