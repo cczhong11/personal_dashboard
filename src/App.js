@@ -19,6 +19,7 @@ import {
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Menu, Layout } from "antd";
+import ChineseCalendar from "./components/ChineseCalendar";
 import {
   BookOutlined,
   UserOutlined,
@@ -27,6 +28,7 @@ import {
   FolderViewOutlined,
   HeartOutlined,
   SafetyCertificateOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 import ReadSummaryList from "./components/ReadSummaryList";
 const { Header, Sider, Content } = Layout;
@@ -106,6 +108,10 @@ function App(props) {
           <Menu.Item key="4" icon={<AimOutlined />}>
             年计划
             <Link to="/year_plan" />
+          </Menu.Item>
+          <Menu.Item key="calendar" icon={<CalendarOutlined />}>
+            干支日历
+            <Link to="/chinese-calendar" />
           </Menu.Item>
           <Menu.Item key="5" icon={<BookOutlined />}>
             读书笔记
@@ -255,6 +261,7 @@ function App(props) {
               children={<MarkdownPage name="同理心.md" list="must" />}
             />
             <Route path="/signin" component={SignInPage} />
+            <Route path="/chinese-calendar" component={ChineseCalendar} />
           </div>
         </Content>
       </Layout>
