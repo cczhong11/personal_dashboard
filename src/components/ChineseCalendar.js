@@ -14,10 +14,11 @@ export default function ChineseCalendar() {
       // Calculate day's Gan-Zhi based on lunar calendar
       if (lunar && lunar.lunarDay) {
         // Calculate the day's Gan index (1-10)
-        const baseDate = new Date(1900, 0, 31); // 1900-01-31 was 甲子日
+        const baseDate = new Date(1900, 0, 31); // 1900-01-31 was 甲辰日
         const daysDiff = Math.floor((date - baseDate) / (24 * 60 * 60 * 1000));
-        const ganIndex = daysDiff % 10;
-        const zhiIndex = daysDiff % 12;
+        // 甲辰日对应干支序号：甲(0)辰(4)
+        const ganIndex = (0 + daysDiff) % 10;
+        const zhiIndex = (4 + daysDiff) % 12;
         
         return Gan[ganIndex] + Zhi[zhiIndex];
       }
