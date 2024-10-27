@@ -18,12 +18,44 @@ export default function ChineseCalendar() {
     return `${Gan[ganIndex]}${Zhi[zhiIndex]}年 【${animal}年】`;
   };
 
-  const getMonthGanZhi = (year, month) => {
-    // 1900-01是丁丑月
-    const yearOffset = year - 1900;
-    const totalMonths = yearOffset * 12 + (month - 1);
-    const ganIndex = (3 + totalMonths) % 10; // 丁(3)
-    const zhiIndex = (1 + totalMonths) % 12; // 丑(1)
+  // 节气的大致日期(忽略小时)
+  const SOLAR_TERMS = [
+    { name: '立春', month: 2, day: 4 },
+    { name: '惊蛰', month: 3, day: 6 },
+    { name: '清明', month: 4, day: 5 },
+    { name: '立夏', month: 5, day: 6 },
+    { name: '芒种', month: 6, day: 6 },
+    { name: '小暑', month: 7, day: 7 },
+    { name: '立秋', month: 8, day: 8 },
+    { name: '白露', month: 9, day: 8 },
+    { name: '寒露', month: 10, day: 8 },
+    { name: '立冬', month: 11, day: 7 },
+    { name: '大雪', month: 12, day: 7 },
+    { name: '小寒', month: 1, day: 6 }
+  ];
+
+  const getMonthGanZhi = (year, month, day) => {
+    // 确定节气月
+    let solarTermMonth = month;
+    const termDay = SOLAR_TERMS.find(term => term.month === month)?.day || 1;
+    
+    // 如果还没到该月的节气日期,应该按上个月计算
+    if (day < termDay) {
+      solarTermMonth = month - 1;
+      if (solarTermMonth === 0) {
+        solarTermMonth = 12;
+        year -= 1;
+      }
+    }
+
+    // 计算干支
+    // 年干支对应的月干支起始索引
+    const yearGanIndex = (year - 1900 + 6) % 10; // 1900年为庚
+    const monthBaseGan = (yearGanIndex * 2 + 2) % 10; // 节气正月的天干
+    
+    const ganIndex = (monthBaseGan + (solarTermMonth - 1)) % 10;
+    const zhiIndex = (solarTermMonth + 1) % 12; // 寅月为正月
+    
     return `${Gan[ganIndex]}${Zhi[zhiIndex]}月`;
   };
 
