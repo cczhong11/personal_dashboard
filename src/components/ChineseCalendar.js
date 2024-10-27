@@ -6,6 +6,28 @@ const Gan = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸
 const Zhi = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 const Animals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
 
+const checkConflict = (yearGZ, monthGZ) => {
+  // 提取年干和月干
+  const yearGan = yearGZ.charAt(0);
+  const monthGan = monthGZ.charAt(0);
+  
+  // 检查冲突规则
+  const conflicts = {
+    '甲': '己',
+    '乙': '庚',
+    '丙': '辛',
+    '丁': '壬',
+    '戊': '癸',
+    '己': '甲',
+    '庚': '乙',
+    '辛': '丙',
+    '壬': '丁',
+    '癸': '戊'
+  };
+  
+  return conflicts[yearGan] === monthGan || conflicts[monthGan] === yearGan;
+};
+
 export default function ChineseCalendar() {
   const [year, setYear] = useState(new Date().getFullYear());
 
@@ -82,11 +104,17 @@ export default function ChineseCalendar() {
       );
       
       if (dayData) {
+        const hasConflict = checkConflict(dayData.GanZhiYear, dayData.GanZhiMonth);
         return (
           <div style={{ fontSize: '12px', color: '#666' }}>
             <div>{dayData.GanZhiYear}年</div>
             <div>{dayData.GanZhiMonth}月</div>
             <div>{dayData.GanZhiDay}日</div>
+            {hasConflict && (
+              <div style={{ color: 'red', fontWeight: 'bold' }}>
+                年月冲
+              </div>
+            )}
           </div>
         );
       }
