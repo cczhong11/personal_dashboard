@@ -7,12 +7,14 @@ const Zhi = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉
 const Animals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
 
 const checkConflict = (yearGZ, monthGZ) => {
-  // 提取年干和月干
+  // 提取年干支和月干支
   const yearGan = yearGZ.charAt(0);
+  const yearZhi = yearGZ.charAt(1);
   const monthGan = monthGZ.charAt(0);
+  const monthZhi = monthGZ.charAt(1);
   
-  // 检查冲突规则
-  const conflicts = {
+  // 天干冲突规则
+  const ganConflicts = {
     '甲': '庚',
     '乙': '辛',
     '丙': '壬',
@@ -23,7 +25,27 @@ const checkConflict = (yearGZ, monthGZ) => {
     '癸': '丁'
   };
   
-  return conflicts[yearGan] === monthGan || conflicts[monthGan] === yearGan;
+  // 地支冲突规则
+  const zhiConflicts = {
+    '子': '午',
+    '丑': '未',
+    '寅': '申',
+    '卯': '酉',
+    '辰': '戌',
+    '巳': '亥',
+    '午': '子',
+    '未': '丑',
+    '申': '寅',
+    '酉': '卯',
+    '戌': '辰',
+    '亥': '巳'
+  };
+  
+  // 检查天干冲突或地支冲突
+  const hasGanConflict = ganConflicts[yearGan] === monthGan;
+  const hasZhiConflict = zhiConflicts[yearZhi] === monthZhi;
+  
+  return hasGanConflict || hasZhiConflict;
 };
 
 export default function ChineseCalendar() {
