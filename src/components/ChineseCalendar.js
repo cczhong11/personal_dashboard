@@ -71,12 +71,29 @@ export default function ChineseCalendar() {
 
   const dateCellRender = (date) => {
     const dateObj = date.toDate();
-    const dayGanZhi = getDayGanZhi(dateObj);
-    return (
-      <div style={{ fontSize: '12px', color: '#666' }}>
-        {dayGanZhi}
-      </div>
-    );
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    
+    try {
+      const monthData = LunarCalendar.calendar(year, month);
+      const dayData = monthData.monthData.find(d => 
+        d.year === year && d.month === month && d.day === day
+      );
+      
+      if (dayData) {
+        return (
+          <div style={{ fontSize: '12px', color: '#666' }}>
+            <div>{dayData.GanZhiYear}年</div>
+            <div>{dayData.GanZhiMonth}月</div>
+            <div>{dayData.GanZhiDay}日</div>
+          </div>
+        );
+      }
+    } catch (error) {
+      console.error('Error calculating Gan-Zhi:', error, date);
+    }
+    return null;
   };
 
   const headerRender = ({ value, type, onChange, onTypeChange }) => {
