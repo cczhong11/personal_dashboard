@@ -11,9 +11,15 @@ export default function ChineseCalendar() {
 
   const getYearGanZhi = (year) => {
     try {
-      // Get first day of the year data
-      const monthData = LunarCalendar.calendar(year, 1);
-      const dayData = monthData.monthData[0];
+      // Use current date to get the correct Gan-Zhi year
+      const currentDate = new Date();
+      const month = currentDate.getMonth() + 1;
+      const day = currentDate.getDate();
+      
+      const monthData = LunarCalendar.calendar(year, month);
+      const dayData = monthData.monthData.find(d => 
+        d.year === year && d.month === month && d.day === day
+      );
       
       if (dayData) {
         return `${dayData.GanZhiYear}年 【${dayData.zodiac}年】`;
