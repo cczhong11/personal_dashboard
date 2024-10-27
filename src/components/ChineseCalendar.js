@@ -57,7 +57,7 @@ export default function ChineseCalendar() {
 
   const headerRender = ({ value, type, onChange, onTypeChange }) => {
     const yearGanZhi = getYearGanZhi(value.year());
-    const monthGanZhi = getMonthGanZhi(value.year(), value.month() + 1);
+    const monthGanZhi = getMonthGanZhi(value.year(), value.month() + 1, value.date());
     
     return (
       <div style={{ padding: '16px' }}>
