@@ -13,16 +13,14 @@ const checkConflict = (yearGZ, monthGZ) => {
   
   // 检查冲突规则
   const conflicts = {
-    '甲': '己',
-    '乙': '庚',
-    '丙': '辛',
-    '丁': '壬',
-    '戊': '癸',
-    '己': '甲',
-    '庚': '乙',
-    '辛': '丙',
-    '壬': '丁',
-    '癸': '戊'
+    '甲': '庚',
+    '乙': '辛',
+    '丙': '壬',
+    '丁': '癸',
+    '庚': '甲',
+    '辛': '乙',
+    '壬': '丙',
+    '癸': '丁'
   };
   
   return conflicts[yearGan] === monthGan || conflicts[monthGan] === yearGan;
