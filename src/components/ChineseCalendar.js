@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Calendar, Select } from 'antd';
-import sxtwl from 'sxtwl';
+import LunarCalendar from 'lunar-calendar';
 
 const Gan = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
 const Zhi = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 
 export default function ChineseCalendar() {
   const [year, setYear] = useState(new Date().getFullYear());
-  const lunar = sxtwl.fromDate(new Date());
 
   const getGanZhi = (date) => {
-    const lunar = sxtwl.fromDate(date);
-    const dayGanZhi = Gan[lunar.getDayGan()] + Zhi[lunar.getDayZhi()];
-    return dayGanZhi;
+    const lunar = LunarCalendar.solarToLunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+    const dayGanIndex = (lunar.GanIndex) % 10;
+    const dayZhiIndex = (lunar.ZhiIndex) % 12;
+    return Gan[dayGanIndex] + Zhi[dayZhiIndex];
   };
 
   const dateCellRender = (date) => {
