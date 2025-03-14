@@ -40,7 +40,7 @@ function App(props) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
+    const authToken = localStorage.getItem("authToken");
     setIsAuthenticated(authToken !== null);
   }, []);
   const sub = [
@@ -180,19 +180,27 @@ function App(props) {
             <ProtectedRoute
               exact
               path="/"
-              component={() => <MarkdownPage name="我能做的好的地方.md" list="must" />}
+              component={() => (
+                <MarkdownPage name="我能做的好的地方.md" list="must" />
+              )}
             />
             <ProtectedRoute
               path="/improvement"
-              component={() => <MarkdownPage name="我能做的好的地方.md" list="must" />}
+              component={() => (
+                <MarkdownPage name="我能做的好的地方.md" list="must" />
+              )}
             />
             <ProtectedRoute
               path="/safety"
-              component={() => <MarkdownPage name="应急处理方法.md" list="must" />}
+              component={() => (
+                <MarkdownPage name="应急处理方法.md" list="must" />
+              )}
             />
             <ProtectedRoute
               path="/year_plan"
-              component={() => <MarkdownPage name="2024年计划.md" list="must" />}
+              component={() => (
+                <MarkdownPage name="2025年计划.md" list="must" />
+              )}
             />
             <ProtectedRoute path="/weekly" component={LatestWeekly} />
             <ProtectedRoute path="/monthly" component={LatestMonthly} />
@@ -202,7 +210,7 @@ function App(props) {
               const key = `/${item.json}_edit`;
 
               return (
-                <Route
+                <ProtectedRoute
                   path={key}
                   children={
                     <EditPage list={item.json} date={query.get("date") ?? ""} />
@@ -213,14 +221,17 @@ function App(props) {
             {sub.map((item) => {
               const key = `/${item.json}_view`;
               return (
-                <Route path={key} children={<ShowPage list={item.json} />} />
+                <ProtectedRoute
+                  path={key}
+                  children={<ShowPage list={item.json} />}
+                />
               );
             })}
             {todo_list.map((item) => {
               const key = `/${item.json}_edit`;
 
               return (
-                <Route
+                <ProtectedRoute
                   path={key}
                   children={
                     <EditPage list={item.json} date={query.get("date") ?? ""} />
@@ -231,7 +242,10 @@ function App(props) {
             {todo_list.map((item) => {
               const key = `/${item.json}_view`;
               return (
-                <Route path={key} children={<ShowPage list={item.json} />} />
+                <ProtectedRoute
+                  path={key}
+                  children={<ShowPage list={item.json} />}
+                />
               );
             })}
             <Route
@@ -252,11 +266,11 @@ function App(props) {
                 />
               }
             />
-            <Route
+            <ProtectedRoute
               path="/principe"
               children={<MarkdownPage name="原则.md" list="must" />}
             />
-            <Route
+            <ProtectedRoute
               path="/empthy"
               children={<MarkdownPage name="同理心.md" list="must" />}
             />

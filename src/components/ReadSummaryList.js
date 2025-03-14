@@ -23,28 +23,33 @@ export default function ReadSummaryList() {
     setLoading(true);
     try {
       // Fetch book list
-      const fileResponse = await Axios.get(`https://${dest_url}/file?list=book_summary`);
+      const fileResponse = await Axios.get(
+        `https://${dest_url}/file?list=book_summary`
+      );
       const books = fileResponse.data.data.map((item) => ({
         name: item.name,
         key: item.name,
       }));
 
       // Fetch metadata
-      const metadataResponse = await Axios.get(`https://${dest_url}/metadata?list=book_summary`);
-      const metadataData = metadataResponse.data.data || {};
-      
+      const metadataResponse = await Axios.get(
+        `https://${dest_url}/metadata?list=book_summary`
+      );
+      const metadataData = metadataResponse.data || {};
+
       // Combine data
-      const booksWithMetadata = books.map(book => {
+      const booksWithMetadata = books.map((book) => {
         const bookMetadata = metadataData[book.name] || {};
         return {
           ...book,
-          status: bookMetadata.status || 'not_begin',
-          lastUpdated: bookMetadata.lastUpdated || '-'
+          status: bookMetadata.status || "not_begin",
+          lastUpdated: bookMetadata.lastUpdated || "-",
         };
       });
 
       setBookList(booksWithMetadata);
       setMetadata(metadataData);
+      console.log(metadataResponse);
     } catch (error) {
       console.error("Error fetching data:", error);
       message.error("Failed to load book data");
@@ -57,31 +62,36 @@ export default function ReadSummaryList() {
     try {
       const currentTimestamp = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
       const updatedMetadata = { ...metadata };
-      
+
       // Create or update book entry in metadata
       updatedMetadata[record.name] = {
         ...(updatedMetadata[record.name] || {}),
         status: value,
-        lastUpdated: currentTimestamp
+        lastUpdated: currentTimestamp,
       };
-      
+
       // Update state immediately for responsive UI
       setMetadata(updatedMetadata);
-      
+
       // Update the book list
-      setBookList(bookList.map(book => {
-        if (book.name === record.name) {
-          return {
-            ...book,
-            status: value,
-            lastUpdated: currentTimestamp
-          };
-        }
-        return book;
-      }));
-      
+      setBookList(
+        bookList.map((book) => {
+          if (book.name === record.name) {
+            return {
+              ...book,
+              status: value,
+              lastUpdated: currentTimestamp,
+            };
+          }
+          return book;
+        })
+      );
+
       // Send update to server
-      await Axios.post(`https://${dest_url}/metadata?list=book_summary`, updatedMetadata);
+      await Axios.post(
+        `https://${dest_url}/metadata?list=book_summary`,
+        updatedMetadata
+      );
       message.success("Status updated successfully");
     } catch (error) {
       console.error("Error updating status:", error);
@@ -93,27 +103,29 @@ export default function ReadSummaryList() {
 
   const columns = [
     {
-      title: 'Book Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Book Name",
+      dataIndex: "name",
+      key: "name",
       render: (text, record) => (
-        <a onClick={() => {
-          setClickName(record.name);
-          setShowAll(false);
-        }}>
+        <a
+          onClick={() => {
+            setClickName(record.name);
+            setShowAll(false);
+          }}
+        >
           {text}
         </a>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
       render: (status, record) => (
-        <Select 
-          value={status} 
-          style={{ width: 120 }} 
+        <Select
+          value={status}
+          style={{ width: 120 }}
           onChange={(value) => handleStatusChange(value, record)}
         >
           <Option value="not_begin">Not Begin</Option>
@@ -122,35 +134,35 @@ export default function ReadSummaryList() {
         </Select>
       ),
       filters: [
-        { text: 'Not Begin', value: 'not_begin' },
-        { text: 'Ongoing', value: 'ongoing' },
-        { text: 'Read', value: 'read' },
+        { text: "Not Begin", value: "not_begin" },
+        { text: "Ongoing", value: "ongoing" },
+        { text: "Read", value: "read" },
       ],
       onFilter: (value, record) => record.status === value,
     },
     {
-      title: 'Last Updated',
-      dataIndex: 'lastUpdated',
-      key: 'lastUpdated',
+      title: "Last Updated",
+      dataIndex: "lastUpdated",
+      key: "lastUpdated",
       render: (timestamp) => {
-        if (timestamp === '-') return '-';
+        if (timestamp === "-") return "-";
         // Convert Unix timestamp to Date object and format
         return new Date(timestamp * 1000).toLocaleString();
       },
       sorter: (a, b) => {
-        if (a.lastUpdated === '-') return -1;
-        if (b.lastUpdated === '-') return 1;
+        if (a.lastUpdated === "-") return -1;
+        if (b.lastUpdated === "-") return 1;
         return b.lastUpdated - a.lastUpdated; // Direct comparison of Unix timestamps
       },
     },
   ];
 
   return showAll ? (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: "20px" }}>
       <Title level={2}>Book Summary List</Title>
-      <Table 
-        columns={columns} 
-        dataSource={bookList} 
+      <Table
+        columns={columns}
+        dataSource={bookList}
         loading={loading}
         pagination={{ pageSize: 20 }}
         rowKey="name"
@@ -164,7 +176,7 @@ export default function ReadSummaryList() {
         onClick={() => {
           setShowAll(true);
         }}
-        style={{ marginTop: '20px' }}
+        style={{ marginTop: "20px" }}
       >
         Back to List
       </Button>
