@@ -55,13 +55,14 @@ export default function ReadSummaryList() {
 
   const handleStatusChange = async (value, record) => {
     try {
+      const currentTimestamp = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
       const updatedMetadata = { ...metadata };
       
       // Create or update book entry in metadata
       updatedMetadata[record.name] = {
         ...(updatedMetadata[record.name] || {}),
         status: value,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: currentTimestamp
       };
       
       // Update state immediately for responsive UI
@@ -73,7 +74,7 @@ export default function ReadSummaryList() {
           return {
             ...book,
             status: value,
-            lastUpdated: new Date().toISOString()
+            lastUpdated: currentTimestamp
           };
         }
         return book;
@@ -131,11 +132,15 @@ export default function ReadSummaryList() {
       title: 'Last Updated',
       dataIndex: 'lastUpdated',
       key: 'lastUpdated',
-      render: (text) => text !== '-' ? new Date(text).toLocaleString() : '-',
+      render: (timestamp) => {
+        if (timestamp === '-') return '-';
+        // Convert Unix timestamp to Date object and format
+        return new Date(timestamp * 1000).toLocaleString();
+      },
       sorter: (a, b) => {
         if (a.lastUpdated === '-') return -1;
         if (b.lastUpdated === '-') return 1;
-        return new Date(b.lastUpdated) - new Date(a.lastUpdated);
+        return b.lastUpdated - a.lastUpdated; // Direct comparison of Unix timestamps
       },
     },
   ];
