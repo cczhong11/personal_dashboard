@@ -12,6 +12,10 @@ export default function EmailAnalysisList() {
   const [selectedFile, setSelectedFile] = useState("");
   const [loading, setLoading] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
+  const [summaryStats, setSummaryStats] = useState({
+    total: 0,
+    typeCounts: {},
+  });
 
   useEffect(() => {
     fetchFileList();
@@ -62,7 +66,7 @@ export default function EmailAnalysisList() {
       setLoading(false);
     }
   };
-  console.log(emailData);
+
   const handleFileChange = (value) => {
     setSelectedFile(value);
   };
@@ -98,7 +102,14 @@ export default function EmailAnalysisList() {
       width: "30%",
     },
   ];
-
+  useEffect(() => {
+    const total = emailData.length;
+    const typeCounts = emailData.reduce((acc, item) => {
+      acc[item.type] = (acc[item.type] || 0) + 1;
+      return acc;
+    }, {});
+    setSummaryStats({ total, typeCounts });
+  }, [emailData]);
   return (
     <div style={{ padding: "20px" }}>
       <Title level={2}>邮件分析</Title>
@@ -117,7 +128,18 @@ export default function EmailAnalysisList() {
           ))}
         </Select>
       </div>
-
+      <div style={{ marginBottom: 16 }}>
+        <strong>总邮件数: </strong>
+        {summaryStats.total}
+        <span style={{ marginLeft: 16 }}>
+          <strong>类型统计: </strong>
+          {Object.entries(summaryStats.typeCounts).map(([type, count]) => (
+            <span key={type} style={{ marginRight: 8 }}>
+              {type}: {count}
+            </span>
+          ))}
+        </span>
+      </div>
       <Table
         columns={columns}
         dataSource={emailData}
