@@ -10,6 +10,7 @@ import ReadList from "./components/ReadList";
 import ShowPage from "./components/ShowPage";
 import SignInPage from "./components/SignInPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import EmailAnalysisList from "./components/EmailAnalysisList";
 import {
   BrowserRouter as Router,
   Route,
@@ -121,6 +122,10 @@ function App(props) {
             书籍总结
             <Link to="/book_summary" />
           </Menu.Item>
+          <Menu.Item key="7" icon={<BookOutlined />}>
+            email总结
+            <Link to="/email_analysis" />
+          </Menu.Item>
           <SubMenu key="sub1" icon={<EditOutlined />} title="修改">
             {sub.map((item) => {
               const key = `${item.json}_edit`;
@@ -206,6 +211,10 @@ function App(props) {
             <ProtectedRoute path="/monthly" component={LatestMonthly} />
             <ProtectedRoute path="/read" component={ReadList} />
             <ProtectedRoute path="/book_summary" component={ReadSummaryList} />
+            <ProtectedRoute
+              path="/email_analysis"
+              component={EmailAnalysisList}
+            />
             {sub.map((item) => {
               const key = `/${item.json}_edit`;
 
