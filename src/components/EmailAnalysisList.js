@@ -144,7 +144,7 @@ export default function EmailAnalysisList() {
         columns={columns}
         dataSource={emailData}
         loading={loading}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 30 }}
         rowKey="title"
       />
     </div>
