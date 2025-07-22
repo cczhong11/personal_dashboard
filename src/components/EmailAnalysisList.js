@@ -33,10 +33,12 @@ export default function EmailAnalysisList() {
       const response = await Axios.get(
         `https://${dest_url}/file?list=email_analysis`
       );
-      const files = response.data.data.map((file) => ({
-        name: file.name,
-        value: file.name,
-      }));
+      const files = response.data.data
+        .map((file) => ({
+          name: file.name,
+          value: file.name,
+        }))
+        .sort((a, b) => b.name.localeCompare(a.name));
       setFileList(files);
 
       // 默认选择最新文件
@@ -82,6 +84,18 @@ export default function EmailAnalysisList() {
       title: "发件人",
       dataIndex: "sender",
       key: "sender",
+      render: (sender) => {
+        const emailMatch = sender.match(/<([^>]+)>/);
+        const email = emailMatch ? emailMatch[1] : sender;
+        const searchUrl = `https://mail.google.com/mail/u/0/#search/from%3A${encodeURIComponent(
+          email
+        )}`;
+        return (
+          <a href={searchUrl} target="_blank" rel="noopener noreferrer">
+            {sender}
+          </a>
+        );
+      },
     },
     {
       title: "摘要",
