@@ -37,6 +37,9 @@ export default function BookSummaryPage(props) {
     (highlight) => highlight.type === "important"
   );
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
+  const [showOnlyImportant, setShowOnlyImportant] = useState(false);
+  const [fontSize, setFontSize] = useState("16");
+  const importantIndexSet = new Set(importantHighlights.map((h) => h.index));
   const postData = () => {
     Axios.post(`https://${dest_url}/json?list=${props.list}_highlight`, {
       date: props.name.split(".")[0], // remove json
@@ -79,6 +82,57 @@ export default function BookSummaryPage(props) {
     selection.removeAllRanges();
     setHighlightJsonData([...highlightJsonData, newHighlight]);
   };
+  const handleImportantCurrentSelection = () => {
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    const parentElement = range.commonAncestorContainer.parentElement;
+    const parentparentElement = parentElement?.parentElement;
+    const currentIndex = parentparentElement?.getAttribute("data-index");
+    if (currentIndex == null) return;
+    const newHighlight = {
+      index: parseInt(currentIndex, 10),
+      startOffset: 0,
+      endOffset: 0,
+      type: "important",
+    };
+    if (!importantIndexSet.has(parseInt(currentIndex, 10))) {
+      setHighlightJsonData([...highlightJsonData, newHighlight]);
+    }
+  };
+
+  const removeHighlight = (
+    summaryIndex,
+    contentType,
+    startOffset,
+    endOffset
+  ) => {
+    setHighlightJsonData((prev) =>
+      prev.filter(
+        (h) =>
+          !(
+            h.index === summaryIndex &&
+            h.type === contentType &&
+            h.startOffset === startOffset &&
+            h.endOffset === endOffset
+          )
+      )
+    );
+  };
+
+  const undoLastHighlight = () => {
+    if (!highlightJsonData.length) return;
+    // Prefer undo of non-important highlight first
+    const lastIndex = [...highlightJsonData]
+      .reverse()
+      .findIndex((h) => h.type !== "important");
+    const idx =
+      lastIndex === -1
+        ? highlightJsonData.length - 1
+        : highlightJsonData.length - 1 - lastIndex;
+    setHighlightJsonData(highlightJsonData.filter((_, i) => i !== idx));
+  };
+
   const handleImportant = (e) => {
     const parentElement = e.target.parentElement;
     const currentIndex = e.target.getAttribute("data-index");
@@ -109,7 +163,7 @@ export default function BookSummaryPage(props) {
       const scrollY = window.scrollY;
 
       setToolbarPosition({
-        top: rect.top - 40 + scrollY,
+        top: rect.top - 52 + scrollY,
         left: rect.left + rect.width / 2 + scrollX,
       });
     }
@@ -124,6 +178,18 @@ export default function BookSummaryPage(props) {
       divRef.current.removeEventListener(event, showToolbar);
     };
   }, []);
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("bs_font_size");
+      if (saved) setFontSize(saved);
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("bs_font_size", fontSize);
+    } catch (_) {}
+  }, [fontSize]);
   const renderHighlightedText = (text, summaryIndex, contentType) => {
     let lastOffset = 0;
     const elements = [];
@@ -141,7 +207,23 @@ export default function BookSummaryPage(props) {
       );
       // 添加高亮的文本
       elements.push(
-        <span className="highlight">
+        <span
+          className="highlight"
+          data-start={highlight.startOffset}
+          data-end={highlight.endOffset}
+          onClick={(e) => {
+            // 只有按住 Alt/Option（或 Ctrl/Command）时才允许点击删除，避免误触
+            if (e.altKey || e.ctrlKey || e.metaKey) {
+              removeHighlight(
+                summaryIndex,
+                contentType,
+                highlight.startOffset,
+                highlight.endOffset
+              );
+            }
+          }}
+          title="按住 Alt/Option 再点击可取消该高亮（Ctrl/Command 也可）"
+        >
           {text.slice(highlight.startOffset, highlight.endOffset)}
         </span>
       );
@@ -153,13 +235,93 @@ export default function BookSummaryPage(props) {
 
     return elements;
   };
+  const exportHighlights = (format) => {
+    const data = {
+      date: props.name.split(".")[0],
+      list: props.list,
+      highlights: highlightJsonData,
+    };
+    let content = "";
+    let filename = `highlights_${props.list}.${format}`;
+    if (format === "json") {
+      content = JSON.stringify(data, null, 2);
+    } else if (format === "md") {
+      // Simple Markdown export with important indexes first
+      const important = new Set(importantHighlights.map((h) => h.index));
+      const lines = [];
+      lines.push(`# Highlights for ${props.list}`);
+      lines.push("");
+      jsonData.forEach((book, i) => {
+        if (important.has(i)) {
+          lines.push(`## ⭐ ${i + 1}. Summary`);
+        } else {
+          lines.push(`## ${i + 1}. Summary`);
+        }
+        const hs = highlightJsonData.filter(
+          (h) => h.index === i && h.type === "summary"
+        );
+        hs.forEach((h) =>
+          lines.push(`- ${book.summary.slice(h.startOffset, h.endOffset)}`)
+        );
+        const ho = highlightJsonData.filter(
+          (h) => h.index === i && h.type === "original-text"
+        );
+        if (ho.length) {
+          lines.push("\n**Original:**");
+          ho.forEach((h) =>
+            lines.push(`> ${book.chunk.slice(h.startOffset, h.endOffset)}`)
+          );
+        }
+        lines.push("");
+      });
+      content = lines.join("\n");
+    }
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  useEffect(() => {
+    const onKey = (e) => {
+      if (
+        e.target &&
+        (e.target.tagName === "INPUT" ||
+          e.target.tagName === "TEXTAREA" ||
+          e.isComposing)
+      )
+        return;
+      if (e.key === "h" || e.key === "H") {
+        e.preventDefault();
+        try {
+          handleHighlight();
+        } catch (_) {}
+      } else if (e.key === "i" || e.key === "I") {
+        e.preventDefault();
+        try {
+          handleImportantCurrentSelection();
+        } catch (_) {}
+      } else if (e.key === "u" || e.key === "U") {
+        e.preventDefault();
+        undoLastHighlight();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [highlightJsonData]);
   const sorted_highlight = importantHighlights
     .map((h) => {
       return h.index;
     })
     .sort((a, b) => b - a);
   return (
-    <div ref={divRef} className="book-summary-page">
+    <div
+      ref={divRef}
+      className="book-summary-page"
+      style={{ fontSize: `${fontSize}px` }}
+    >
       <div
         className="selection-toolbar"
         style={{
@@ -170,51 +332,108 @@ export default function BookSummaryPage(props) {
         <button className="btn btn-primary" onClick={handleHighlight}>
           高亮
         </button>
+        <button
+          className="btn btn-important"
+          onClick={handleImportantCurrentSelection}
+        >
+          重要
+        </button>
       </div>
       <h2 className="page-title">
         ✨ Latest Highlight: {sorted_highlight[0]?.toString() ?? "—"}
       </h2>
-
-      {jsonData?.map((book, index) => (
-        <div
-          className={`book-item ${
-            selectedSummaryIndex === index
-              ? "show-original"
-              : importantHighlights.some(
-                  (highlight) => highlight.index === index
-                )
-              ? "important"
-              : ""
-          }`}
-          key={index}
-          data-index={index}
+      <div className="controls-bar">
+        <button
+          className="btn btn-secondary"
+          onClick={() => setShowOnlyImportant((v) => !v)}
         >
-          {importantHighlights.some((highlight) => highlight.index === index)
-            ? "⭐"
-            : ""}
-          <p className="summary" data-index={index}>
-            {index + 1}. {renderHighlightedText(book.summary, index, "summary")}
-          </p>
-          <button
-            className="btn btn-secondary"
-            onClick={() => toggleOriginalText(index)}
+          {showOnlyImportant ? "显示全部" : "仅看重要"}
+        </button>
+        <button className="btn btn-secondary" onClick={undoLastHighlight}>
+          撤销
+        </button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => exportHighlights("json")}
+        >
+          导出JSON
+        </button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => exportHighlights("md")}
+        >
+          导出Markdown
+        </button>
+        <div className="font-controls">
+          <span className="font-label" aria-hidden>
+            字号
+          </span>
+          <span className="font-preview" aria-hidden>
+            A
+          </span>
+          <select
+            className="font-select"
+            value={fontSize}
+            onChange={(e) => setFontSize(e.target.value)}
+            aria-label="选择字号"
           >
-            阅读原文
-          </button>
-          <button
-            className="btn btn-important"
-            onClick={handleImportant}
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="22">22</option>
+            <option value="24">24</option>
+          </select>
+          <span className="font-unit" aria-hidden>
+            px
+          </span>
+        </div>
+      </div>
+      {jsonData
+        ?.filter(
+          (_, index) => !showOnlyImportant || importantIndexSet.has(index)
+        )
+        .map((book, index) => (
+          <div
+            className={`book-item ${
+              selectedSummaryIndex === index
+                ? "show-original"
+                : importantHighlights.some(
+                    (highlight) => highlight.index === index
+                  )
+                ? "important"
+                : ""
+            }`}
+            key={index}
             data-index={index}
           >
-            重要
-          </button>
-          {selectedSummaryIndex === index && (
-            <p className="original-text" data-index={index}>
-              {renderHighlightedText(book.chunk, index, "original-text")}
+            {importantHighlights.some((highlight) => highlight.index === index)
+              ? "⭐"
+              : ""}
+            <p className="summary" data-index={index}>
+              {index + 1}.{" "}
+              {renderHighlightedText(book.summary, index, "summary")}
             </p>
-          )}
-        </div>
-      ))}
+            <button
+              className="btn btn-secondary"
+              onClick={() => toggleOriginalText(index)}
+            >
+              阅读原文
+            </button>
+            <button
+              className="btn btn-important"
+              onClick={handleImportant}
+              data-index={index}
+            >
+              重要
+            </button>
+            {selectedSummaryIndex === index && (
+              <p className="original-text" data-index={index}>
+                {renderHighlightedText(book.chunk, index, "original-text")}
+              </p>
+            )}
+          </div>
+        ))}
       <style jsx>{`
         :root {
           --card-radius: 12px;
@@ -242,6 +461,55 @@ export default function BookSummaryPage(props) {
           padding: 12px 8px;
           margin: 0 0 12px 0;
           border-bottom: 1px solid var(--border-soft);
+        }
+        .controls-bar {
+          position: sticky;
+          top: 52px;
+          z-index: 4;
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: saturate(160%) blur(6px);
+          padding: 8px 0 12px;
+          margin-bottom: 8px;
+          border-bottom: 1px dashed var(--border-soft);
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          align-items: center;
+        }
+        .font-controls {
+          margin-left: auto;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .font-label {
+          font-size: 12px;
+          color: #7a7a7a;
+        }
+        .font-preview {
+          font-weight: 700;
+          line-height: 1;
+          transform: translateY(-1px);
+        }
+        .font-select {
+          appearance: none;
+          -webkit-appearance: none;
+          border: 1px solid #e5e7eb;
+          border-radius: 8px;
+          padding: 6px 28px 6px 10px;
+          font-size: 14px;
+          background: #fff
+            url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>')
+            no-repeat right 8px center;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+        .font-select:focus {
+          outline: none;
+          border-color: #cbd5e1;
+        }
+        .font-unit {
+          font-size: 12px;
+          color: #9aa0a6;
         }
 
         .book-item {
@@ -342,6 +610,10 @@ export default function BookSummaryPage(props) {
           background-color: #fff59d;
           padding: 0 0.1em;
           border-radius: 4px;
+          cursor: text; /* 避免误触删除的暗示 */
+        }
+        .highlight:hover {
+          box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
         }
       `}</style>
     </div>
