@@ -159,17 +159,21 @@ export default function BookSummaryPage(props) {
     })
     .sort((a, b) => b - a);
   return (
-    <div ref={divRef}>
+    <div ref={divRef} className="book-summary-page">
       <div
+        className="selection-toolbar"
         style={{
-          position: "absolute",
           top: `${toolbarPosition.top}px`,
           left: `${toolbarPosition.left}px`,
         }}
       >
-        <button onClick={handleHighlight}>高亮</button>
+        <button className="btn btn-primary" onClick={handleHighlight}>
+          高亮
+        </button>
       </div>
-      <h2>Latest Highlight section: {sorted_highlight[0]?.toString()}</h2>
+      <h2 className="page-title">
+        ✨ Latest Highlight: {sorted_highlight[0]?.toString() ?? "—"}
+      </h2>
 
       {jsonData?.map((book, index) => (
         <div
@@ -191,9 +195,17 @@ export default function BookSummaryPage(props) {
           <p className="summary" data-index={index}>
             {index + 1}. {renderHighlightedText(book.summary, index, "summary")}
           </p>
-          <button onClick={() => toggleOriginalText(index)}>阅读原文</button>
-
-          <button onClick={handleImportant} data-index={index}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => toggleOriginalText(index)}
+          >
+            阅读原文
+          </button>
+          <button
+            className="btn btn-important"
+            onClick={handleImportant}
+            data-index={index}
+          >
             重要
           </button>
           {selectedSummaryIndex === index && (
@@ -204,8 +216,132 @@ export default function BookSummaryPage(props) {
         </div>
       ))}
       <style jsx>{`
+        :root {
+          --card-radius: 12px;
+          --border-soft: #e9ecef;
+          --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06),
+            0 1px 2px rgba(0, 0, 0, 0.04);
+          --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.04),
+            0 4px 6px rgba(0, 0, 0, 0.06);
+          --accent: #ffeb3b;
+          --accent-strong: #f5c518;
+        }
+
+        .book-summary-page {
+          max-width: 860px;
+          margin: 0 auto;
+          padding: 24px 16px 48px;
+        }
+
+        .page-title {
+          position: sticky;
+          top: 0;
+          z-index: 5;
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: saturate(160%) blur(6px);
+          padding: 12px 8px;
+          margin: 0 0 12px 0;
+          border-bottom: 1px solid var(--border-soft);
+        }
+
+        .book-item {
+          background: #fff;
+          border: 1px solid var(--border-soft);
+          border-radius: var(--card-radius);
+          padding: 14px 16px;
+          margin: 14px 0;
+          box-shadow: var(--shadow-sm);
+          transition: transform 0.12s ease, box-shadow 0.2s ease,
+            border-color 0.2s ease;
+        }
+        .book-item:hover {
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-md);
+        }
+        .book-item.important {
+          border-color: var(--accent-strong);
+          box-shadow: inset 0 0 0 2px rgba(245, 197, 24, 0.25);
+        }
+
+        .summary {
+          font-weight: 500;
+          line-height: 1.7;
+          margin: 0 0 10px 0;
+        }
+        .original-text {
+          margin-top: 10px;
+          padding: 12px;
+          background: #fafafa;
+          border-radius: 10px;
+          border: 1px dashed #e5e7eb;
+          line-height: 1.7;
+        }
+
+        .btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 14px;
+          line-height: 1;
+          padding: 8px 12px;
+          border-radius: 10px;
+          border: 1px solid transparent;
+          cursor: pointer;
+          user-select: none;
+          transition: background-color 0.2s ease, border-color 0.2s ease,
+            transform 0.05s ease;
+          margin-right: 8px;
+        }
+        .btn:active {
+          transform: translateY(1px);
+        }
+        .btn-primary {
+          background: rgba(255, 213, 79, 0.85); /* 柔和暖黄，稍微透明 */
+          border-color: rgba(251, 192, 45, 0.85);
+          color: #111;
+          backdrop-filter: saturate(180%) blur(8px); /* 毛玻璃效果 */
+          -webkit-backdrop-filter: saturate(180%) blur(8px);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+        .btn-primary:hover {
+          background: rgba(255, 202, 40, 0.9);
+        }
+        .btn-secondary {
+          background: #f1f3f5;
+          border-color: #e5e7eb;
+        }
+        .btn-important {
+          background: #fff7e6;
+          border-color: #ffd666;
+        }
+
+        .selection-toolbar {
+          position: absolute;
+          transform: translate(-50%, -100%);
+          background: #111;
+          color: #fff;
+          padding: 6px 8px;
+          border-radius: 10px;
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+          display: flex;
+          gap: 8px;
+          z-index: 999;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .selection-toolbar::after {
+          content: "";
+          position: absolute;
+          bottom: -6px;
+          left: 50%;
+          transform: translateX(-50%);
+          border: 6px solid transparent;
+          border-top-color: #111;
+        }
+
         .highlight {
-          background-color: yellow;
+          background-color: #fff59d;
+          padding: 0 0.1em;
+          border-radius: 4px;
         }
       `}</style>
     </div>
