@@ -10,7 +10,7 @@ export default function ReadList() {
   const [showAll, setShowAll] = useState(true);
   const c = 0;
   useEffect(() => {
-    Axios.get(`https://${dest_url}/file?list=read`).then((data) => {
+    Axios.get(`${dest_url}/file?list=read`).then((data) => {
       setMarkdownList(
         data.data.data.map((item) => {
           return {

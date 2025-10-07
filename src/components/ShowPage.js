@@ -13,7 +13,7 @@ export default function ShowPage(props) {
   let history = useHistory();
   const c = 0;
   useEffect(() => {
-    Axios.get(`https://${dest_url}/file?list=${props.list}`).then((data) => {
+    Axios.get(`${dest_url}/file?list=${props.list}`).then((data) => {
       if (props.list.includes("tour") || props.list.includes("resturant")) {
         setMarkdownList(
           data.data.data

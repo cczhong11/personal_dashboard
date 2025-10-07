@@ -12,14 +12,14 @@ export default function BookSummaryPage(props) {
   const [selectedSummaryIndex, setSelectedSummaryIndex] = useState(null);
   useEffect(() => {
     Axios.get(
-      `https://${dest_url}/json?name=${props.name}&list=${props.list}`
+      `${dest_url}/json?name=${props.name}&list=${props.list}`
     ).then((data) => {
       setJsonData(data.data.data[0].data);
     });
   }, [c]);
   useEffect(() => {
     Axios.get(
-      `https://${dest_url}/json?name=${props.name}&list=${props.list}_highlight`
+      `${dest_url}/json?name=${props.name}&list=${props.list}_highlight`
     ).then((data) => {
       setHighlightJsonData(data.data.data[0].data.data ?? []);
     });
@@ -41,7 +41,7 @@ export default function BookSummaryPage(props) {
   const [fontSize, setFontSize] = useState("16");
   const importantIndexSet = new Set(importantHighlights.map((h) => h.index));
   const postData = () => {
-    Axios.post(`https://${dest_url}/json?list=${props.list}_highlight`, {
+    Axios.post(`${dest_url}/json?list=${props.list}_highlight`, {
       date: props.name.split(".")[0], // remove json
       data: highlightJsonData,
     }).then(() => {});

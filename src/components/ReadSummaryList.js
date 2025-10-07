@@ -24,7 +24,7 @@ export default function ReadSummaryList() {
     try {
       // Fetch book list
       const fileResponse = await Axios.get(
-        `https://${dest_url}/file?list=book_summary`
+        `${dest_url}/file?list=book_summary`
       );
       const books = fileResponse.data.data.map((item) => ({
         name: item.name,
@@ -33,7 +33,7 @@ export default function ReadSummaryList() {
 
       // Fetch metadata
       const metadataResponse = await Axios.get(
-        `https://${dest_url}/metadata?list=book_summary`
+        `${dest_url}/metadata?list=book_summary`
       );
       const metadataData = metadataResponse.data || {};
 
@@ -89,7 +89,7 @@ export default function ReadSummaryList() {
 
       // Send update to server
       await Axios.post(
-        `https://${dest_url}/metadata?list=book_summary`,
+        `${dest_url}/metadata?list=book_summary`,
         updatedMetadata
       );
       message.success("Status updated successfully");

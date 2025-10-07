@@ -10,7 +10,7 @@ export default function MarkdownPage(props) {
   let history = useHistory();
   useEffect(() => {
     Axios.get(
-      `https://${dest_url}/file?name=${props.name}&list=${props.list}`
+      `${dest_url}/file?name=${props.name}&list=${props.list}`
     ).then((data) => {
       setMarkdownData(data.data.data[0].content);
     });

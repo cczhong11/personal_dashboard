@@ -14,7 +14,7 @@ export default function MarkdownEditPage(props) {
   //load data if exist
   useEffect(() => {
     if (props.name !== undefined && props.name !== null && props.name !== "") {
-      let url = `https://${dest_url}/file?list=${props.list}&name=${props.name}`;
+      let url = `${dest_url}/file?list=${props.list}&name=${props.name}`;
 
       Axios.get(url).then((data) => {
         setJsonData(data.data.data[0]);
@@ -33,7 +33,7 @@ export default function MarkdownEditPage(props) {
 
   const postData = () => {
     Axios.post(
-      `https://${dest_url}/file?list=${props.list}&name=${props.name}`,
+      `${dest_url}/file?list=${props.list}&name=${props.name}`,
       jsonData
     ).then(() => {
       history.push(`/markdown_show?list=${props.list}&name=${props.name}`);

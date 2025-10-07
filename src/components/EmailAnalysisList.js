@@ -31,7 +31,7 @@ export default function EmailAnalysisList() {
     setFileLoading(true);
     try {
       const response = await Axios.get(
-        `https://${dest_url}/file?list=email_analysis`
+        `${dest_url}/file?list=email_analysis`
       );
       const files = response.data.data
         .map((file) => ({
@@ -57,7 +57,7 @@ export default function EmailAnalysisList() {
     setLoading(true);
     try {
       const response = await Axios.get(
-        `https://${dest_url}/json?name=${selectedFile}&list=email_analysis`
+        `${dest_url}/json?name=${selectedFile}&list=email_analysis`
       );
 
       setEmailData(response.data.data[0].data.result || []);

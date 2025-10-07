@@ -8,7 +8,7 @@ export default function JsonRenderPage(props) {
   const [jsonData, setJsonData] = useState({});
   const [markdownData, setMarkdownData] = useState("");
   useEffect(() => {
-    Axios.get(`https://${dest_url}/json?name=${props.list}.json`).then(
+    Axios.get(`${dest_url}/json?name=${props.list}.json`).then(
       (data) => {
         setJsonStructure(data.data.data[0].structure.content);
       }
@@ -17,13 +17,13 @@ export default function JsonRenderPage(props) {
   useEffect(() => {
     if (props.latest !== "true") {
       Axios.get(
-        `https://${dest_url}/json?name=${props.name}&list=${props.list}`
+        `${dest_url}/json?name=${props.name}&list=${props.list}`
       ).then((data) => {
         setJsonData(data.data.data[0].data);
       });
     } else {
       // here name is the list name
-      Axios.get(`https://${dest_url}/json?date=latest&list=${props.list}`).then(
+      Axios.get(`${dest_url}/json?date=latest&list=${props.list}`).then(
         (data) => {
           setJsonData(data.data.data[0].data);
         }

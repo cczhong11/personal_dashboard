@@ -12,7 +12,7 @@ export default function EditPage(props) {
       setLoading(false);
       return;
     }
-    Axios.get(`https://${dest_url}/date?list=${props.list}`).then((data) => {
+    Axios.get(`${dest_url}/date?list=${props.list}`).then((data) => {
       setDate(data.data.date);
       setLoading(false);
     });
