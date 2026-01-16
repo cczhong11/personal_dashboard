@@ -1,4 +1,5 @@
 import JsonRenderPage from "./JsonRenderPage";
+import Weekly2026Page from "./Weekly2026Page";
 import Axios from "axios";
 import { Button } from "antd";
 import React, { useState, useEffect } from "react";
@@ -72,7 +73,11 @@ export default function ShowPage(props) {
     </>
   ) : (
     <>
-      <JsonRenderPage name={clickName} list={props.list} onlynext={false} />
+      {props.list === "weekly_2026" ? (
+        <Weekly2026Page name={clickName} list={props.list} />
+      ) : (
+        <JsonRenderPage name={clickName} list={props.list} onlynext={false} />
+      )}
       <Button
         type="primary"
         onClick={() => {

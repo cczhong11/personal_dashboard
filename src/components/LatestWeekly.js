@@ -1,4 +1,4 @@
-import JsonRenderPage from './JsonRenderPage'
+import Weekly2026Page from "./Weekly2026Page";
 export default function LatestWeekly() {
-    return <JsonRenderPage latest="true" list="weekly" onlynext={true}/>;
+  return <Weekly2026Page latest="true" list="weekly_2026" />;
 }

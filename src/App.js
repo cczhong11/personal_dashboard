@@ -45,7 +45,7 @@ function App(props) {
     setIsAuthenticated(authToken !== null);
   }, []);
   const sub = [
-    { name: "每周计划", json: "weekly" },
+    { name: "每周计划", json: "weekly_2026" },
     { name: "每周工作总结", json: "weekly_work" },
     { name: "每周生活时间总结", json: "weekly_analysis" },
     { name: "每月计划", json: "monthly" },

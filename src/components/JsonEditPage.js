@@ -4,6 +4,7 @@ import { Input } from "antd";
 import { Button } from "antd";
 import { useHistory } from "react-router-dom";
 import JsonRenderPage from "./JsonRenderPage";
+import Weekly2026Page from "./Weekly2026Page";
 import { dest_url } from "./const";
 const { TextArea } = Input;
 export default function JsonEditPage(props) {
@@ -62,7 +63,9 @@ export default function JsonEditPage(props) {
   };
   return (
     <>
-      {props.list === "weekly" || props.list === "monthly" ? (
+      {props.list === "weekly_2026" ? (
+        <Weekly2026Page latest="true" list={props.list} />
+      ) : props.list === "weekly" || props.list === "monthly" ? (
         <JsonRenderPage latest="true" list={props.list} onlynext={true} />
       ) : (
         <></>

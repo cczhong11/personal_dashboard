@@ -1,4 +1,5 @@
 import JsonEditPage from "./JsonEditPage";
+import Weekly2026EditPage from "./Weekly2026EditPage";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
 import { dest_url } from "./const";
@@ -17,5 +18,11 @@ export default function EditPage(props) {
       setLoading(false);
     });
   }, [c]);
-  return loading ? <></> : <JsonEditPage list={props.list} date={date} />;
+  if (loading) {
+    return <></>;
+  }
+  if (props.list === "weekly_2026") {
+    return <Weekly2026EditPage list={props.list} date={date} />;
+  }
+  return <JsonEditPage list={props.list} date={date} />;
 }
