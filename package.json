@@ -30,7 +30,7 @@
     "eject": "react-scripts eject",
     "predeploy": "react-scripts --openssl-legacy-provider  build",
     "deploy": "gh-pages -d build",
-    "dev-local": "REACT_APP_API_ORIGIN=http://localhost:3000 react-scripts --openssl-legacy-provider start"
+    "dev-local": "REACT_APP_API_ORIGIN=http://localhost:220 react-scripts --openssl-legacy-provider start"
   },
   "eslintConfig": {
     "extends": [

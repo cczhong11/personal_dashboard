@@ -55,10 +55,9 @@ function App(props) {
     { name: "自己的想法", json: "event_and_feeling" },
   ];
   const todo_list = [
+    { name: "视频上传清单", json: "video_upload_checklist" },
     { name: "读书计划", json: "book" },
     { name: "做饭", json: "cook" },
-    { name: "链接", json: "reading_link" },
-    { name: "餐厅", json: "resturant" },
     { name: "旅游", json: "tour" },
     { name: "摄影", json: "photos" },
     { name: "想做的事情", json: "play" },
@@ -204,7 +203,7 @@ function App(props) {
             <ProtectedRoute
               path="/year_plan"
               component={() => (
-                <MarkdownPage name="2025年计划.md" list="must" />
+                <MarkdownPage name="2026年计划.md" list="must" />
               )}
             />
             <ProtectedRoute path="/weekly" component={LatestWeekly} />
